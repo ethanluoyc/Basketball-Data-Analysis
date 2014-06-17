@@ -44,7 +44,7 @@ with open('output.arff', 'wb') as f:
 """
 df = pd.read_csv('data/Rankings.csv')
 print df
-print df
+
 
 
 
