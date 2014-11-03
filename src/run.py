@@ -1,6 +1,7 @@
 from main import *
 from Tools import game_file_info, label_win_loss
 from Basketball import LineupStats
+import pandas as pd
 
 ALLTEAMS = ['CLE', 'NJN', 'NYK', 'MIL', 'PHI', 'ATL', 'MIN', 'DEN', 'OKC',
             'MIA', 'WAS', 'MEM', 'CHI', 'LAL', 'POR', 'GSW', 'UTA', 'ORL',
@@ -228,10 +229,10 @@ def gamestats_from_weighted_sum_lineups(team_name, file_name):
     # concatenate the lineups of the game into a DataFrame
     return pd.DataFrame(out_df).T
 
-
-
-df = lineupstats_splitbytwoteams()
-df.to_csv(OUTPUT_PATH % "lineupstats_splitbytwoteams.csv", index=False)
+#
+#
+# df = lineupstats_splitbytwoteams()
+# df.to_csv(OUTPUT_PATH % "lineupstats_splitbytwoteams.csv", index=False)
 
 
 

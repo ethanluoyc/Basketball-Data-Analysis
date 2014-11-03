@@ -12,13 +12,41 @@ ATTRIBUTES = ["FGM", "FGA", "FGP", "FG3M", "FG3A", "FG3P", "FTM", "FTA", "FTP",
               "AST", "PF", "STL", "BLK",
               ]
 
+REF = pd.read_csv("../../data/lineups_stats_nba_2008-09_lowercasenodot.csv")
 
+def som_get_lineup_data(lineup_key,type="none"):
+    
+    ref = REF
+    sorted_names = sorted([" ".join(name.split(" ")[::-1]) for name in lineup_key]) #Sort by Last name
+    key = ",".join(
+        [" ".join(name.split(" ")[::-1]) 
+        for name in sorted_names])
+    mask = ref['GROUP_NAME'] == key
+    # print ref[mask]
+    if mask.any():
+        out = (ref[mask].squeeze()['FGM':])
+        out["TYPE"]= "none"
+        print "yes!"
+        return out  # /float(2880)
+    else:
+        print 'Season Team %s, lineupkey=%s' % (type, key)
+        if type == "none":
+            return pd.Series()
+        # else:
+        #     # df = not_found_reference["FGM":] # need to redo this part
+        #     df["TYPE"] = type
+        #     df["NON_LINEUP_COUNT"] = 1
+        #     return df
+
+# def check_name_discrepancy(s):
+#     stats_all_names = 
 
 def get_lineup_data(team_name, lineup_key, interval=60 * 48, normalize=True, type="median"):
     """This function retrieves to find lineup data from stats.nba.com using name keys"""
     """the normalization uses seconds"""
     try:
-        ref = pd.read_csv(LINEUP_STATS_PATH % team_name)
+        # ref = pd.read_csv(LINEUP_STATS_PATH % team_name)
+        ref = REF
     except:
         print "%s, STAT.NBA.com of the team not AVAILABLE " % team_name
         return pd.Series()
@@ -30,22 +58,22 @@ def get_lineup_data(team_name, lineup_key, interval=60 * 48, normalize=True, typ
     elif type == "none":
         pass
 
-    key = " - ".join(
+    key = "-".join(
         sorted([",".join(name.split()[::-1]) for name in lineup_key]))  # form the search key used in statsnba.com data
 
     mask = ref['GROUP_NAME'] == key
     normalize_coefficient = interval / float(60 * 48)
 
     if mask.any():
-        out = (ref[mask].squeeze()['FGM':]) * normalize_coefficient
-        out["TYPE"]="none"
+        out = (ref[mask].squeeze()['FGM':])
+        out["TYPE"]= "none"
         return out  # /float(2880)
     else:
         print 'Season Team %s,team: %s,lineupkey=%s' % (type, team_name, key)
         if type == "none":
             return pd.Series()
         else:
-            df = not_found_reference["FGM":] * normalize_coefficient  # need to redo this part
+            df = not_found_reference["FGM":] # need to redo this part
             df["TYPE"] = type
             df["NON_LINEUP_COUNT"] = 1
             return df
